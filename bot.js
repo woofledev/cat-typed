@@ -22,12 +22,14 @@ client.on('message', async message => {
     if (typedMessage.startsWith('cat-ping')){
       message.channel.send('Pong!');
     } else if (typedMessage === 'cat-typed *') {
+      if (!message.channel.permissionsFor(client.user).has('ATTACH_FILES')) {message.channel.send("enable file perms so i can send it.");return;}
       const fileContents = await fs.promises.readFile(filePath, 'utf-8');
       const fileAttachment = new MessageAttachment(Buffer.from(fileContents), filePath);
       message.channel.send({ files: [fileAttachment] });
     } else if (typedMessage.startsWith('cat-typed ')) {
       const numCharacters = typedMessage.split(' ')[1];
       if (isNaN(numCharacters) || numCharacters <= 0) return;
+      if (!message.channel.permissionsFor(client.user).has('ATTACH_FILES')) {message.channel.send("enable file perms so i can send it.");return;}
       const fileContents = await fs.promises.readFile(filePath, 'utf-8');
       const lastCharacters = fileContents.slice(-numCharacters);
       const fileAttachment = new MessageAttachment(Buffer.from(lastCharacters), 'cat-chars-'+numCharacters+'.txt');
